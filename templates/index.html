@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Feliz Dia de Amor y Amistad, Mi Amor</title>
+<meta name="description" content="Una pagina romantica e interactiva para celebrar el Dia del Amor y la Amistad">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Estilos -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+<!-- Icono -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+</head>
+<body>
+
+<!-- Canvas de fondo para particulas y corazones flotantes -->
+<canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+<!-- Capa para el efecto de mini-corazones al hacer clic -->
+<div id="click-hearts-layer" aria-hidden="true"></div>
+
+<!-- Capa de confeti en pantalla completa -->
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<!-- Overlay oscuro que aparece detras de la carta cuando esta abierta -->
+<div class="letter-overlay" id="letter-overlay" aria-hidden="true"></div>
+
+<!-- ===================== CARTA DESACOPLADA (fuera del sobre) =====================
+     Este bloque vive directamente bajo <body>, SIN ningun ancestro con
+     overflow:hidden ni transform. Se activa/desactiva via JS al abrir el
+     sobre para que el scroll interno funcione siempre, en cualquier navegador. -->
+<div class="letter-card" id="letter-card">
+  <div class="letter-card-inner" id="letter-card-inner">
+    <button type="button" class="letter-close" id="letter-close" aria-label="Cerrar carta">✕</button>
+    <h3 class="letter-title">{{ datos.carta_titulo }}</h3>
+    {% for parrafo in datos.carta_parrafos %}
+    <p class="letter-paragraph">{{ parrafo }}</p>
+    {% endfor %}
+    <p class="letter-signature">{{ datos.carta_firma }}</p>
+  </div>
+</div>
+
+<!-- Reproductor de musica de fondo -->
+<audio id="bg-music" loop preload="none">
+  <source src="{{ url_for('static', filename='audio/musica-fondo.mp3') }}" type="audio/mpeg">
+</audio>
+
+<button id="music-toggle" class="music-btn" aria-label="Reproducir o pausar musica de fondo" title="Musica de fondo">
+  <span class="music-icon">🎵</span>
+</button>
+
+<!-- Elementos decorativos flotantes (cartas, regalos, corazones) -->
+<div class="floating-decor" aria-hidden="true">
+  <span class="decor decor-1">💌</span>
+  <span class="decor decor-2">🎁</span>
+  <span class="decor decor-3">💖</span>
+  <span class="decor decor-4">💝</span>
+  <span class="decor decor-5">🎈</span>
+  <span class="decor decor-6">💗</span>
+</div>
+
+<!-- ===================== HERO HEADER ===================== -->
+<header class="hero" id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <p class="hero-kicker">✨ Un dia para nosotros ✨</p>
+    <h1 class="hero-title">{{ datos.titulo_principal }} <span class="heart-pulse">❤️</span></h1>
+    <p class="hero-subtitle">{{ datos.subtitulo }}</p>
+    <button class="btn-shine" id="btn-scroll-story">
+      <span>{{ datos.boton_hero }}</span>
+    </button>
+  </div>
+  <div class="scroll-indicator" aria-hidden="true">
+    <span></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== GALERIA DE RECUERDOS ===================== -->
+  <section class="section gallery-section" id="galeria">
+    <div class="section-header">
+      <p class="section-kicker">Nuestros momentos</p>
+      <h2 class="section-title">Galeria de Recuerdos</h2>
+      <p class="section-subtitle">Cada foto cuenta un pedacito de nuestra historia</p>
+    </div>
+
+    <div class="masonry-grid">
+      {% for foto in datos.fotos %}
+      <figure class="polaroid-card tilt-card" data-index="{{ loop.index0 }}">
+        <div class="polaroid-inner">
+          <img
+            src="{{ url_for('static', filename='images/' + foto.src) }}"
+            alt="{{ foto.caption }}"
+            loading="lazy"
+            class="polaroid-img"
+            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23FFE4EC%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2260%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%F0%9F%93%B7%3C/text%3E%3C/svg%3E'"
+          >
+          <figcaption class="polaroid-caption">{{ foto.caption }}</figcaption>
+        </div>
+      </figure>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ===================== CARTA DE AMOR INTERACTIVA (SOBRE) ===================== -->
+  <section class="section letter-section" id="carta">
+    <div class="section-header">
+      <p class="section-kicker">Algo desde mi corazon</p>
+      <h2 class="section-title">Una Carta Para Ti</h2>
+      <p class="section-subtitle">Toca el sobre para abrirlo</p>
+    </div>
+
+    <div class="envelope-wrapper">
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Abrir carta de amor">
+        <div class="envelope-back"></div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-seal">💌</div>
+        <div class="envelope-front"></div>
+      </div>
+      <p class="envelope-hint" id="envelope-hint">Haz clic en el sobre ✨</p>
+    </div>
+  </section>
+
+  <!-- ===================== BOTON SORPRESA ===================== -->
+  <section class="section surprise-section" id="sorpresa">
+    <div class="section-header">
+      <p class="section-kicker">Una ultima pregunta</p>
+      <h2 class="section-title">¿Te atreves a descubrirlo?</h2>
+    </div>
+
+    <button class="btn-surprise" id="btn-surprise">
+      <span>{{ datos.boton_sorpresa_texto }}</span>
+    </button>
+
+    <div class="surprise-message" id="surprise-message" aria-live="polite">
+      {{ datos.mensaje_sorpresa }}
+    </div>
+  </section>
+
+  <!-- ===================== CONTADOR DE TIEMPO JUNTOS ===================== -->
+  <section class="section counter-section" id="contador">
+    <div class="section-header">
+      <p class="section-kicker">Nuestro tiempo juntos</p>
+      <h2 class="section-title">Cada segundo cuenta</h2>
+      <p class="section-subtitle">Desde que decidimos escribir esta historia juntos</p>
+    </div>
+
+    <div class="counter-grid" id="counter-grid" data-start="{{ datos.fecha_inicio_relacion }}">
+      <div class="counter-item">
+        <span class="counter-number" id="count-days">0</span>
+        <span class="counter-label">Dias</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-number" id="count-hours">0</span>
+        <span class="counter-label">Horas</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-number" id="count-minutes">0</span>
+        <span class="counter-label">Minutos</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-number" id="count-seconds">0</span>
+        <span class="counter-label">Segundos</span>
+      </div>
+    </div>
+    <p class="counter-footer">...y seguimos sumando momentos juntos ❤️</p>
+  </section>
+
+  <footer class="site-footer">
+    <p>Hecho con <span class="heart-pulse">❤️</span> para celebrar lo nuestro</p>
+  </footer>
+
+</main>
+
+<!-- ===================== MODAL LIGHTBOX ===================== -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close" aria-label="Cerrar imagen">✕</button>
+  <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Foto anterior">‹</button>
+  <img src="" alt="" class="lightbox-img" id="lightbox-img">
+  <p class="lightbox-caption" id="lightbox-caption"></p>
+  <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Foto siguiente">›</button>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

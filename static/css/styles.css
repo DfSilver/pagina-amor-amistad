@@ -1,0 +1,884 @@
+/* ==========================================================================
+   styles.css
+   Estilos para la pagina romantica "Feliz Dia de Amor y Amistad, Mi Amor"
+   Tema: Glassmorphism suave, gradientes rosa/fucsia/carmin, tipografia calida
+   ========================================================================== */
+
+/* ---------- Variables globales ---------- */
+:root {
+  --rosa-pastel: #FFB6C1;
+  --fucsia: #FF69B4;
+  --carmin: #E63946;
+  --rubi: #D62246;
+  --blanco-perlado: #FFF0F5;
+  --dorado: #F4C77B;
+  --dorado-suave: #E8B85C;
+  --texto-oscuro: #4A1C2B;
+  --texto-suave: #7A3B4A;
+
+  --gradiente-fondo: linear-gradient(135deg, var(--blanco-perlado) 0%, var(--rosa-pastel) 45%, var(--fucsia) 100%);
+  --gradiente-carmin: linear-gradient(135deg, var(--carmin) 0%, var(--rubi) 100%);
+  --gradiente-dorado: linear-gradient(135deg, var(--dorado) 0%, var(--dorado-suave) 100%);
+
+  --sombra-suave: 0 8px 32px rgba(214, 34, 70, 0.15);
+  --sombra-fuerte: 0 20px 50px rgba(214, 34, 70, 0.25);
+
+  --vidrio-fondo: rgba(255, 255, 255, 0.35);
+  --vidrio-borde: rgba(255, 255, 255, 0.5);
+
+  --fuente-titulo: 'Great Vibes', cursive;
+  --fuente-subtitulo: 'Dancing Script', cursive;
+  --fuente-cuerpo: 'Poppins', sans-serif;
+}
+
+/* ---------- Reset basico ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--fuente-cuerpo);
+  color: var(--texto-oscuro);
+  background: var(--gradiente-fondo);
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ---------- Canvas de particulas (fondo) ---------- */
+#particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+  display: none;
+}
+
+/* ---------- Capa de mini-corazones al hacer clic ---------- */
+#click-hearts-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.click-heart {
+  position: absolute;
+  font-size: 1.4rem;
+  animation: click-heart-pop 0.9s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes click-heart-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(-50%, -140%) scale(1.2) rotate(15deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -220%) scale(0.6) rotate(-10deg);
+    opacity: 0;
+  }
+}
+
+/* ---------- Elementos decorativos flotantes ---------- */
+.floating-decor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.decor {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.55;
+  animation: float 8s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(214, 34, 70, 0.2));
+}
+
+.decor-1 { top: 10%; left: 5%;  font-size: 2.2rem; animation-duration: 9s;  animation-delay: 0s; }
+.decor-2 { top: 25%; left: 88%; font-size: 2rem;   animation-duration: 10s; animation-delay: 1s; }
+.decor-3 { top: 60%; left: 10%; font-size: 1.8rem; animation-duration: 7s;  animation-delay: 0.5s; }
+.decor-4 { top: 75%; left: 85%; font-size: 2.4rem; animation-duration: 11s; animation-delay: 2s; }
+.decor-5 { top: 40%; left: 92%; font-size: 2.6rem; animation-duration: 12s; animation-delay: 1.5s; }
+.decor-6 { top: 85%; left: 15%; font-size: 1.6rem; animation-duration: 8s;  animation-delay: 3s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translateY(-18px) rotate(4deg); }
+  50%      { transform: translateY(0) rotate(0deg); }
+  75%      { transform: translateY(18px) rotate(-4deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.25); }
+}
+
+.heart-pulse {
+  display: inline-block;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* ---------- Boton de musica ---------- */
+.music-btn {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--vidrio-fondo);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--vidrio-borde);
+  box-shadow: var(--sombra-suave);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.music-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.music-btn.playing .music-icon {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* ---------- Layout general de secciones ---------- */
+main {
+  position: relative;
+  z-index: 2;
+}
+
+.section {
+  padding: 100px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-kicker {
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--carmin);
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: var(--fuente-subtitulo);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  color: var(--rubi);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--texto-suave);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  overflow: hidden;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255, 105, 180, 0.35) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.hero-content {
+  max-width: 800px;
+  z-index: 2;
+  animation: hero-appear 1.2s ease-out;
+}
+
+@keyframes hero-appear {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-kicker {
+  font-size: 1.1rem;
+  color: var(--rubi);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.hero-title {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  color: var(--rubi);
+  line-height: 1.2;
+  text-shadow: 0 4px 20px rgba(230, 57, 70, 0.3);
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--texto-suave);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* ---------- Boton con efecto de brillo ---------- */
+.btn-shine {
+  position: relative;
+  display: inline-block;
+  padding: 16px 40px;
+  border-radius: 50px;
+  background: var(--gradiente-carmin);
+  color: var(--blanco-perlado);
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: var(--sombra-fuerte);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.btn-shine::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-25deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0%   { left: -75%; }
+  50%  { left: 125%; }
+  100% { left: 125%; }
+}
+
+.btn-shine:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 42px;
+  border: 2px solid var(--rubi);
+  border-radius: 20px;
+  opacity: 0.7;
+}
+
+.scroll-indicator span {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rubi);
+  transform: translateX(-50%);
+  animation: scroll-dot 1.6s infinite;
+}
+
+@keyframes scroll-dot {
+  0%   { top: 6px; opacity: 1; }
+  70%  { opacity: 1; }
+  100% { top: 24px; opacity: 0; }
+}
+
+/* ---------- GALERIA MASONRY ---------- */
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 30px;
+  grid-auto-flow: dense;
+}
+
+.polaroid-card {
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.polaroid-inner {
+  background: var(--blanco-perlado);
+  padding: 14px 14px 20px;
+  border-radius: 8px;
+  box-shadow: var(--sombra-suave);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.polaroid-card:nth-child(odd) .polaroid-inner {
+  transform: rotate(-2deg);
+}
+
+.polaroid-card:nth-child(even) .polaroid-inner {
+  transform: rotate(2deg);
+}
+
+.polaroid-card:hover .polaroid-inner {
+  box-shadow: var(--sombra-fuerte);
+}
+
+.polaroid-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.polaroid-card:hover .polaroid-img {
+  transform: scale(1.06);
+  filter: saturate(1.15);
+}
+
+.polaroid-caption {
+  font-family: var(--fuente-subtitulo);
+  font-size: 1.2rem;
+  text-align: center;
+  color: var(--texto-suave);
+  margin-top: 10px;
+}
+
+/* ---------- LIGHTBOX MODAL ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(74, 28, 43, 0.92);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.lightbox.active {
+  display: flex;
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 75vh;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: lightbox-zoom 0.35s ease;
+}
+
+@keyframes lightbox-zoom {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.lightbox-caption {
+  font-family: var(--fuente-subtitulo);
+  color: var(--blanco-perlado);
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 30px;
+  font-size: 1.8rem;
+  color: var(--blanco-perlado);
+  background: rgba(255, 255, 255, 0.15);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  color: var(--blanco-perlado);
+  background: rgba(255, 255, 255, 0.15);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+
+/* ---------- CARTA DE AMOR (SOBRE, sin la carta dentro) ---------- */
+.letter-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.envelope-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.envelope {
+  position: relative;
+  width: min(360px, 85vw);
+  height: 240px;
+  cursor: pointer;
+}
+
+.envelope-back {
+  position: absolute;
+  inset: 0;
+  background: var(--gradiente-carmin);
+  border-radius: 10px;
+  box-shadow: var(--sombra-fuerte);
+  z-index: 1;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.envelope-front {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: var(--rubi);
+  border-radius: 0 0 10px 10px;
+  clip-path: polygon(0 0, 50% 35%, 100% 0, 100% 100%, 0 100%);
+  z-index: 3;
+  transition: filter 0.3s ease, opacity 0.35s ease;
+}
+
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55%;
+  background: var(--carmin);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top;
+  z-index: 4;
+  transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.35s ease;
+  border-radius: 6px 6px 0 0;
+}
+
+.envelope-seal {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.2rem;
+  z-index: 5;
+  animation: pulse 2s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+
+/* Estado "abriendo": la solapa gira y todo el sobre se desvanece suavemente
+   mientras la carta (que vive fuera, en el body) aparece encima. */
+.envelope.open .envelope-flap {
+  transform: rotateX(180deg);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.envelope.open .envelope-seal {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope.open .envelope-front,
+.envelope.open .envelope-back {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.envelope-hint {
+  font-family: var(--fuente-subtitulo);
+  font-size: 1.15rem;
+  color: var(--texto-suave);
+  animation: pulse 2s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+
+/* ---------- CARTA DESACOPLADA (vive directo en <body>) ----------
+   Al estar fuera del sobre, no tiene NINGUN ancestro con overflow:hidden
+   ni con transform activo, asi que position:fixed y el scroll interno
+   funcionan de forma predecible en todos los navegadores. */
+.letter-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.3);
+  width: min(600px, 90vw);
+  height: min(80vh, 640px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 2100;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.letter-card.open {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.letter-card-inner {
+  width: 100%;
+  height: 100%;
+  background: var(--blanco-perlado);
+  border-radius: 16px;
+  padding: 40px 34px;
+  box-shadow: var(--sombra-fuerte);
+  border: 1px solid var(--vidrio-borde);
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.letter-card-inner::-webkit-scrollbar {
+  width: 8px;
+}
+
+.letter-card-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.letter-card-inner::-webkit-scrollbar-thumb {
+  background: var(--rosa-pastel);
+  border-radius: 10px;
+}
+
+.letter-title {
+  font-family: var(--fuente-titulo);
+  font-size: 2.2rem;
+  color: var(--rubi);
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.letter-paragraph {
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: var(--texto-oscuro);
+  margin-bottom: 16px;
+  text-align: justify;
+}
+
+.letter-signature {
+  font-family: var(--fuente-subtitulo);
+  font-size: 1.5rem;
+  color: var(--carmin);
+  text-align: right;
+  margin-top: 14px;
+  margin-bottom: 10px;
+}
+
+.letter-close {
+  position: sticky;
+  float: right;
+  top: 0;
+  margin-left: 12px;
+  margin-bottom: 8px;
+  font-size: 1.3rem;
+  color: var(--texto-suave);
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+  z-index: 21;
+  background: var(--blanco-perlado);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sombra-suave);
+}
+
+.letter-close:hover {
+  color: var(--rubi);
+  transform: rotate(90deg);
+}
+
+/* Overlay oscuro fijo detras de la carta, elemento independiente en <body> */
+.letter-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(74, 28, 43, 0.55);
+  z-index: 2050;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.letter-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* ---------- BOTON SORPRESA ---------- */
+.surprise-section {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btn-surprise {
+  position: relative;
+  padding: 20px 48px;
+  border-radius: 50px;
+  background: var(--gradiente-dorado);
+  color: var(--texto-oscuro);
+  font-size: 1.15rem;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(232, 184, 92, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: pulse-btn 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-btn {
+  0%, 100% { box-shadow: 0 10px 30px rgba(232, 184, 92, 0.5); }
+  50%      { box-shadow: 0 10px 45px rgba(232, 184, 92, 0.85); }
+}
+
+.btn-surprise:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.btn-surprise:active {
+  transform: scale(0.96);
+}
+
+.surprise-message {
+  margin-top: 34px;
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--rubi);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  max-width: 700px;
+}
+
+.surprise-message.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- CONTADOR ---------- */
+.counter-section {
+  text-align: center;
+}
+
+.counter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.counter-item {
+  background: var(--vidrio-fondo);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--vidrio-borde);
+  border-radius: 16px;
+  padding: 24px 10px;
+  box-shadow: var(--sombra-suave);
+  transition: transform 0.3s ease;
+}
+
+.counter-item:hover {
+  transform: translateY(-6px);
+}
+
+.counter-number {
+  display: block;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 700;
+  color: var(--rubi);
+  font-family: var(--fuente-cuerpo);
+}
+
+.counter-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+.counter-footer {
+  margin-top: 30px;
+  font-family: var(--fuente-subtitulo);
+  font-size: 1.2rem;
+  color: var(--texto-suave);
+}
+
+/* ---------- FOOTER ---------- */
+.site-footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  .section {
+    padding: 70px 16px;
+  }
+
+  .counter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .decor {
+    font-size: 1.4rem;
+    opacity: 0.4;
+  }
+
+  .lightbox-nav {
+    width: 42px;
+    height: 42px;
+    font-size: 2rem;
+  }
+
+  .letter-card {
+    height: min(78vh, 600px);
+  }
+
+  .letter-card-inner {
+    padding: 28px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2.4rem;
+  }
+
+  .btn-shine, .btn-surprise {
+    padding: 14px 28px;
+    font-size: 0.95rem;
+  }
+
+  .masonry-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 18px;
+  }
+
+  .envelope {
+    height: 200px;
+  }
+}
+
+/* ---------- Accesibilidad: reduccion de movimiento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
